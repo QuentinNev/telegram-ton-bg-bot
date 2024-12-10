@@ -8,7 +8,7 @@ bot.api.setMyCommands([{ command: "claim", description: "Claim your AKATON" }]);
 
 bot.command('claim', async (ctx) => {
     const telegramId = ctx.from?.id;
-    const reply_parameters = { reply_parameters: { message_id: ctx.message?.message_id || ctx.from?.id || 0 } };
+    const reply_parameters = { reply_parameters: { message_id: ctx.message?.message_id || ctx.from?.id || 0 }, caption: '' };
 
     // Check if telegram Id is defined
     if (telegramId) {
@@ -27,7 +27,8 @@ bot.command('claim', async (ctx) => {
                 });
 
                 if (result.ok) {
-                    await ctx.reply(`You've successfully claimed your AKATON!`, reply_parameters);
+                    reply_parameters.caption = `You've successfully claimed your AKATON!`;
+                    await ctx.replyWithVideo(`https://shockwaves-media.fra1.cdn.digitaloceanspaces.com/TON/AKATON%20GUN.mp4`, reply_parameters);
                 } else {
                     console.error(`Couldn't get telegram ID`, telegramId);
                     await ctx.reply('Something went wrong claiming your AKATON', reply_parameters);
