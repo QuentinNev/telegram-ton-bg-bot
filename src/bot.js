@@ -42,19 +42,20 @@ var grammy_1 = require("grammy");
 var bot = new grammy_1.Bot(process.env.TELEGRAM_BOT_TOKEN || "");
 bot.api.setMyCommands([{ command: "claim", description: "Claim your AKATON" }]);
 bot.command('claim', function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var telegramId, can, body, result, e_1;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var telegramId, reply_parameters, can, body, result, e_1;
+    var _a, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
                 telegramId = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.id;
+                reply_parameters = { reply_parameters: { message_id: ((_b = ctx.message) === null || _b === void 0 ? void 0 : _b.message_id) || ((_c = ctx.from) === null || _c === void 0 ? void 0 : _c.id) || 0 } };
                 if (!telegramId) return [3 /*break*/, 14];
-                _b.label = 1;
+                _d.label = 1;
             case 1:
-                _b.trys.push([1, 11, , 13]);
+                _d.trys.push([1, 11, , 13]);
                 return [4 /*yield*/, canClaim(telegramId)];
             case 2:
-                can = _b.sent();
+                can = _d.sent();
                 body = JSON.stringify({ telegramId: telegramId });
                 if (!can) return [3 /*break*/, 8];
                 return [4 /*yield*/, fetch('https://api.shockwaves.ai/claims', {
@@ -66,36 +67,36 @@ bot.command('claim', function (ctx) { return __awaiter(void 0, void 0, void 0, f
                         body: body
                     })];
             case 3:
-                result = _b.sent();
+                result = _d.sent();
                 if (!result.ok) return [3 /*break*/, 5];
-                return [4 /*yield*/, ctx.reply("You've successfully claimed your AKATON!")];
+                return [4 /*yield*/, ctx.reply("You've successfully claimed your AKATON!", reply_parameters)];
             case 4:
-                _b.sent();
+                _d.sent();
                 return [3 /*break*/, 7];
             case 5:
                 console.error("Couldn't get telegram ID", telegramId);
-                return [4 /*yield*/, ctx.reply('Something went wrong claiming your AKATON')];
+                return [4 /*yield*/, ctx.reply('Something went wrong claiming your AKATON', reply_parameters)];
             case 6:
-                _b.sent();
-                _b.label = 7;
+                _d.sent();
+                _d.label = 7;
             case 7: return [3 /*break*/, 10];
-            case 8: return [4 /*yield*/, ctx.reply("Sorry, but you've already claimed your AKATON")];
-            case 9: return [2 /*return*/, _b.sent()];
+            case 8: return [4 /*yield*/, ctx.reply("Sorry, but you've already claimed your AKATON", reply_parameters)];
+            case 9: return [2 /*return*/, _d.sent()];
             case 10: return [3 /*break*/, 13];
             case 11:
-                e_1 = _b.sent();
+                e_1 = _d.sent();
                 console.error("Error claiming your AKATON", e_1);
-                return [4 /*yield*/, ctx.reply('Something went wrong claiming your AKATON')];
+                return [4 /*yield*/, ctx.reply('Something went wrong claiming your AKATON', reply_parameters)];
             case 12:
-                _b.sent();
+                _d.sent();
                 return [3 /*break*/, 13];
             case 13: return [3 /*break*/, 16];
             case 14:
                 console.error("Couldn't get telegram ID", telegramId);
-                return [4 /*yield*/, ctx.reply('Something went wrong claiming your AKATON')];
+                return [4 /*yield*/, ctx.reply('Something went wrong claiming your AKATON', reply_parameters)];
             case 15:
-                _b.sent();
-                _b.label = 16;
+                _d.sent();
+                _d.label = 16;
             case 16: return [2 /*return*/];
         }
     });
