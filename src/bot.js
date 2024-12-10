@@ -48,7 +48,7 @@ bot.command('claim', function (ctx) { return __awaiter(void 0, void 0, void 0, f
         switch (_d.label) {
             case 0:
                 telegramId = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.id;
-                reply_parameters = { reply_parameters: { message_id: ((_b = ctx.message) === null || _b === void 0 ? void 0 : _b.message_id) || ((_c = ctx.from) === null || _c === void 0 ? void 0 : _c.id) || 0 } };
+                reply_parameters = { reply_parameters: { message_id: ((_b = ctx.message) === null || _b === void 0 ? void 0 : _b.message_id) || ((_c = ctx.from) === null || _c === void 0 ? void 0 : _c.id) || 0 }, caption: '' };
                 if (!telegramId) return [3 /*break*/, 14];
                 _d.label = 1;
             case 1:
@@ -69,7 +69,8 @@ bot.command('claim', function (ctx) { return __awaiter(void 0, void 0, void 0, f
             case 3:
                 result = _d.sent();
                 if (!result.ok) return [3 /*break*/, 5];
-                return [4 /*yield*/, ctx.reply("You've successfully claimed your AKATON!", reply_parameters)];
+                reply_parameters.caption = "You've successfully claimed your AKATON!";
+                return [4 /*yield*/, ctx.replyWithVideo("https://shockwaves-media.fra1.cdn.digitaloceanspaces.com/TON/AKATON%20GUN.mp4", reply_parameters)];
             case 4:
                 _d.sent();
                 return [3 /*break*/, 7];
