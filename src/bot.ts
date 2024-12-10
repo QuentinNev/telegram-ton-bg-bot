@@ -32,7 +32,7 @@ bot.command('claim', async (ctx) => {
                     await ctx.reply('Something went wrong claiming your AKATON');
                 }
             } else {
-                return await ctx.reply(`You've already claimed your AKATON!`);
+                return await ctx.reply(`Sorry, but you've already claimed your AKATON`);
             }
         } catch (e) {
             console.error(`Error claiming your AKATON`, e);
