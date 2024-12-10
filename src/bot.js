@@ -38,7 +38,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.startBot = void 0;
 require("dotenv/config.js");
-var isProd = process.env.NODE_ENV === "production";
 var grammy_1 = require("grammy");
 var bot = new grammy_1.Bot(process.env.TELEGRAM_BOT_TOKEN || "");
 bot.api.setMyCommands([{ command: "claim", description: "Claim your AKATON" }]);
@@ -61,7 +60,7 @@ bot.command('claim', function (ctx) { return __awaiter(void 0, void 0, void 0, f
                 return [4 /*yield*/, fetch('https://api.shockwaves.ai/claims', {
                         method: 'POST',
                         headers: {
-                            'x-api-token': 'e3dec941734b967b8ee2f4855c271a19',
+                            'x-api-token': process.env.SW_API_TOKEN || '',
                             'Content-Type': 'application/json'
                         },
                         body: body
@@ -80,7 +79,7 @@ bot.command('claim', function (ctx) { return __awaiter(void 0, void 0, void 0, f
                 _b.sent();
                 _b.label = 7;
             case 7: return [3 /*break*/, 10];
-            case 8: return [4 /*yield*/, ctx.reply("You've already claimed your AKATON!")];
+            case 8: return [4 /*yield*/, ctx.reply("Sorry, but you've already claimed your AKATON")];
             case 9: return [2 /*return*/, _b.sent()];
             case 10: return [3 /*break*/, 13];
             case 11:
