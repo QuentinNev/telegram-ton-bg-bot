@@ -1,7 +1,6 @@
 import "dotenv/config.js";
 
-const isProd = process.env.NODE_ENV === "production";
-import { Bot, Context, Keyboard, InlineKeyboard } from 'grammy';
+import { Bot, Context } from 'grammy';
 
 const bot = new Bot<Context>(process.env.TELEGRAM_BOT_TOKEN || ``);
 
@@ -20,8 +19,8 @@ bot.command('claim', async (ctx) => {
                 const result = await fetch('https://api.shockwaves.ai/claims', {
                     method: 'POST',
                     headers: {
-                        'x-api-token': 'e3dec941734b967b8ee2f4855c271a19',
-                        'Content-Type':'application/json'
+                        'x-api-token': process.env.SW_API_TOKEN || '',
+                        'Content-Type': 'application/json'
                     },
                     body
                 });
