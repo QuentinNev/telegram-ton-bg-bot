@@ -8,7 +8,7 @@ const chatId: number = parseInt(chatFullId[0]);
 
 const url = isDev ? `http://localhost:3001` : `https://api.shockwaves.ai`;
 
-export const description: string = "Claim your AKATON";
+export const description: string = "Get your kill count";
 export const command = async (ctx: Context) => {
     const userId = ctx.from?.id;
     const reply_parameters = { reply_parameters: { message_id: ctx.message?.message_id || ctx.from?.id || 0 }, caption: '' };
