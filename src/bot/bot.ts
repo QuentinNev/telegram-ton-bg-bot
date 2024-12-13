@@ -2,6 +2,7 @@ import "dotenv/config.js";
 
 import { Bot, Context } from 'grammy';
 import { loadCommands } from "./commands";
+import test from "./game";
 
 const bot = new Bot<Context>(process.env.TELEGRAM_BOT_TOKEN || ``);
 
@@ -25,5 +26,7 @@ export const startBot = async () => {
 
     await bot.start();
 };
+
+test(bot);
 
 export default bot;
