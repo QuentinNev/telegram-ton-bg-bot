@@ -54,8 +54,8 @@ async function spawnEnemy(bot: Bot<Context>) {
         new InputFile(image),
         {
             message_thread_id: treadId,
-            caption: 'KILL KILL KILL',
-            reply_markup: new InlineKeyboard().text('PEW', "pew")
+            caption: 'Contact! Open fire!',
+            reply_markup: new InlineKeyboard().text('FIRE', "pew")
         }
     );
 
