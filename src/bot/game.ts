@@ -25,20 +25,23 @@ export default function startGame(bot: Bot<Context>) {
     bot.callbackQuery('pew', async (ctx: Context) => {
         if (ctx.update.callback_query?.message?.message_id) {
             await bot.api.deleteMessage(chatId, ctx.update.callback_query.message?.message_id);
+            //await updateScore(ctx);
             killEnemy(bot);
         }
 
         if (ctx.update.callback_query?.message?.message_thread_id) {
             await bot.api.deleteMessage(chatId, ctx.update.callback_query?.message?.message_thread_id);
+            //await updateScore(ctx);
             killEnemy(bot);
         }
     })
 }
 
 function spawnEnemy(bot: Bot<Context>) {
+    const image = targets[Math.floor(Math.random() * targets.length)];
     bot.api.sendPhoto(
         chatId,
-        new InputFile(targets[Math.floor(Math.random() * targets.length)]),
+        new InputFile(image),
         {
             message_thread_id: treadId,
             caption: 'KILL KILL KILL',
@@ -48,9 +51,10 @@ function spawnEnemy(bot: Bot<Context>) {
 }
 
 function killEnemy(bot: Bot<Context>) {
+    const image = successes[Math.floor(Math.random() * successes.length)];
     bot.api.sendPhoto(
         chatId,
-        new InputFile(successes[Math.floor(Math.random() * targets.length)]),
+        new InputFile(image),
         {
             message_thread_id: treadId,
             caption: 'You got him!',
@@ -60,4 +64,26 @@ function killEnemy(bot: Bot<Context>) {
     setTimeout(() => {
         spawnEnemy(bot);
     }, 1000);
+}
+
+async function updateScore(ctx: Context) {
+    const userId = ctx.update.callback_query?.from.id;
+
+    const body = JSON.stringify({
+        userId,
+        chatId,
+        version: process.env.GAME_VERSION,
+        score: 1
+    })
+
+    const response = await fetch('https://api.shockwaves.ai/telegram-game', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-token': process.env.SW_API_TOKEN || ''
+        },
+        body
+    }).then(res => res.json());
+
+    console.log("Response", response);
 }
