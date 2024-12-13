@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "start": "npx tsc app.ts && node app.js"
+    "start": "npx tsc && node ./dist/app.js"
   },
   "author": "",
   "license": "ISC",
