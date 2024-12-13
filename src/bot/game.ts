@@ -19,7 +19,23 @@ const successes = readdirSync(successesDir).filter(file =>
 
 import { Bot, Context, InlineKeyboard, InputFile } from "grammy";
 
-export default function test(bot: Bot<Context>) {
+export default function startGame(bot: Bot<Context>) {
+    spawnEnemy(bot);
+
+    bot.callbackQuery('pew', async (ctx: Context) => {
+        if (ctx.update.callback_query?.message?.message_id) {
+            await bot.api.deleteMessage(chatId, ctx.update.callback_query.message?.message_id);
+            killEnemy(bot);
+        }
+
+        if (ctx.update.callback_query?.message?.message_thread_id) {
+            await bot.api.deleteMessage(chatId, ctx.update.callback_query?.message?.message_thread_id);
+            killEnemy(bot);
+        }
+    })
+}
+
+function spawnEnemy(bot: Bot<Context>) {
     bot.api.sendPhoto(
         chatId,
         new InputFile(targets[Math.floor(Math.random() * targets.length)]),
@@ -29,4 +45,19 @@ export default function test(bot: Bot<Context>) {
             reply_markup: new InlineKeyboard().text('PEW', "pew")
         }
     );
+}
+
+function killEnemy(bot: Bot<Context>) {
+    bot.api.sendPhoto(
+        chatId,
+        new InputFile(successes[Math.floor(Math.random() * targets.length)]),
+        {
+            message_thread_id: treadId,
+            caption: 'You got him!',
+        }
+    );
+
+    setTimeout(() => {
+        spawnEnemy(bot);
+    }, 1000);
 }
