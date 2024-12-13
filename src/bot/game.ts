@@ -1,6 +1,8 @@
 import "dotenv/config.js";
 import storage from 'node-persist';
 
+const isDev: boolean = ((process.env.NODE_ENV || 'development') == "development");
+
 const chatFullId: string[] = (process.env.CHAT_FULL_ID || '0').split('_');
 const chatId: number = parseInt(chatFullId[0]);
 const treadId: number = parseInt(chatFullId.length > 1 ? chatFullId[1] : '-1');
@@ -26,9 +28,8 @@ export default async function startGame(bot: Bot<Context>) {
     const nextSpawn = await storage.get('next-spawn');
     const currentEnemy = await storage.get('current-enemy');
 
-    if (!nextSpawn && !currentEnemy) spawnEnemy(bot);
+    if ((!nextSpawn && !currentEnemy) || isDev) spawnEnemy(bot);
     if (nextSpawn) {
-        console.log(`nextSpawn is due in ${(nextSpawn - Date.now()) / 1000} seconds`)
         setTimeout(() => {
             spawnEnemy(bot);
         }, nextSpawn - Date.now());
@@ -36,15 +37,13 @@ export default async function startGame(bot: Bot<Context>) {
 
     bot.callbackQuery('pew', async (ctx: Context) => {
         if (ctx.update.callback_query?.message?.message_id) {
-            killEnemy(bot, ctx.update.callback_query?.message?.message_id);
+            killEnemy(bot, ctx, ctx.update.callback_query?.message?.message_id);
         }
 
         if (ctx.update.callback_query?.message?.message_thread_id) {
-            killEnemy(bot, ctx.update.callback_query?.message?.message_thread_id);
+            killEnemy(bot, ctx, ctx.update.callback_query?.message?.message_thread_id);
         }
-
-        await updateScore(ctx);
-    })
+    });
 }
 
 async function spawnEnemy(bot: Bot<Context>) {
@@ -63,9 +62,10 @@ async function spawnEnemy(bot: Bot<Context>) {
     await storage.set('current-enemy', msg.message_id);
 }
 
-async function killEnemy(bot: Bot<Context>, message_id: number) {
+async function killEnemy(bot: Bot<Context>, ctx: Context, message_id: number) {
     await bot.api.deleteMessage(chatId, message_id);
     await storage.set('current-enemy', undefined);
+    const data = await updateScore(ctx);
 
     const image = successes[Math.floor(Math.random() * successes.length)];
     bot.api.sendPhoto(
@@ -73,7 +73,7 @@ async function killEnemy(bot: Bot<Context>, message_id: number) {
         new InputFile(image),
         {
             message_thread_id: treadId,
-            caption: 'You got him!',
+            caption: `${ctx.from?.first_name || ctx.from?.username} killed the enemy!\nCurrent kill count : ${data.score}`,
         }
     );
 
@@ -90,7 +90,7 @@ async function killEnemy(bot: Bot<Context>, message_id: number) {
     }, delay);
 }
 
-const url: string = (process.env.NODE_ENV || 'development' == "development") ? 'http://localhost:3001' : 'https://api.shockwaves.ai'
+const url: string = isDev ? 'http://localhost:3001' : 'https://api.shockwaves.ai'
 
 async function updateScore(ctx: Context) {
     const userId = ctx.update.callback_query?.from.id;
@@ -101,7 +101,7 @@ async function updateScore(ctx: Context) {
         version: process.env.GAME_VERSION
     })
 
-    const response = await fetch(`${url}/telegram-game/add_points`, {
+    return await fetch(`${url}/telegram-game/add_points`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
