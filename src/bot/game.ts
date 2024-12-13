@@ -5,7 +5,7 @@ const isDev: boolean = ((process.env.NODE_ENV || 'development') == "development"
 
 const chatFullId: string[] = (process.env.CHAT_FULL_ID || '0').split('_');
 const chatId: number = parseInt(chatFullId[0]);
-const treadId: string = chatFullId.length > 1 ? "_" + chatFullId[1] : '-1';
+const treadId: number = parseInt(chatFullId.length > 1 ? chatFullId[1] : '-1');
 
 import { readdirSync } from 'fs';
 import { join } from 'path';
