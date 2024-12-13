@@ -1,5 +1,4 @@
 import "dotenv/config.js";
-import Conf from 'conf';
 
 const chatFullId: string[] = (process.env.CHAT_FULL_ID || '0').split('_');
 const chatId: number = parseInt(chatFullId[0]);

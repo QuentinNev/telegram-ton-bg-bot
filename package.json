@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "conf": "^13.1.0",
     "dotenv": "^16.4.7",
     "grammy": "^1.33.0",
     "typescript": "^5.7.2"
