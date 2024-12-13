@@ -25,13 +25,13 @@ export default function startGame(bot: Bot<Context>) {
     bot.callbackQuery('pew', async (ctx: Context) => {
         if (ctx.update.callback_query?.message?.message_id) {
             await bot.api.deleteMessage(chatId, ctx.update.callback_query.message?.message_id);
-            //await updateScore(ctx);
+            await updateScore(ctx);
             killEnemy(bot);
         }
 
         if (ctx.update.callback_query?.message?.message_thread_id) {
             await bot.api.deleteMessage(chatId, ctx.update.callback_query?.message?.message_thread_id);
-            //await updateScore(ctx);
+            await updateScore(ctx);
             killEnemy(bot);
         }
     })
@@ -66,17 +66,18 @@ function killEnemy(bot: Bot<Context>) {
     }, 1000);
 }
 
+const url: string = (process.env.NODE_ENV || 'development' == "development") ? 'http://localhost:3001' : 'https://api.shockwaves.ai'
+
 async function updateScore(ctx: Context) {
     const userId = ctx.update.callback_query?.from.id;
 
     const body = JSON.stringify({
         userId,
         chatId,
-        version: process.env.GAME_VERSION,
-        score: 1
+        version: process.env.GAME_VERSION
     })
 
-    const response = await fetch('https://api.shockwaves.ai/telegram-game', {
+    const response = await fetch(`${url}/telegram-game/add_points`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
