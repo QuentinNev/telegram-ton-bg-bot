@@ -13,6 +13,10 @@ const handleGracefulShutdown = async () => {
     process.exit();
 };
 
+bot.catch((e) => {
+    console.log("Error", e);
+})
+
 if (process.env.NODE_ENV === "development") {
     // Graceful shutdown handlers
     process.once("SIGTERM", handleGracefulShutdown);
