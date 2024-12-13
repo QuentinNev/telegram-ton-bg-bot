@@ -17,12 +17,16 @@ const successes = readdirSync(successesDir).filter(file =>
     file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png')
 ).map(file => join(successesDir, file));
 
-import { Bot, Context, InputFile } from "grammy";
+import { Bot, Context, InlineKeyboard, InputFile } from "grammy";
 
 export default function test(bot: Bot<Context>) {
     bot.api.sendPhoto(
         chatId,
-        new InputFile(targets[0]),
-        { message_thread_id: treadId }
+        new InputFile(targets[Math.floor(Math.random() * targets.length)]),
+        {
+            message_thread_id: treadId,
+            caption: 'KILL KILL KILL',
+            reply_markup: new InlineKeyboard().text('PEW', "pew")
+        }
     );
 }
