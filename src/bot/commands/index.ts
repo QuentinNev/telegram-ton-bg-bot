@@ -1,6 +1,7 @@
 import { Bot, Context } from 'grammy';
 import { readdirSync } from 'fs';
 import { join } from 'path';
+import { fileURLToPath } from 'url';
 
 export const loadCommands = (bot: Bot<Context>) => {
   const commandsPath = join(__dirname);  // Path to the commands folder
@@ -10,8 +11,12 @@ export const loadCommands = (bot: Bot<Context>) => {
     if (file !== 'index.ts') {
       const commandName = file.split('.')[0];  // Get the file name without extension
 
-      // Import each command dynamically
-      import(join(commandsPath, file)).then((commandModule) => {
+      // Convert the file path to a URL
+      const filePath = join(commandsPath, file);
+      const fileURL = `file://${filePath}`;
+
+      // Import each command dynamically using the file URL
+      import(fileURL).then((commandModule) => {
         const { description, command } = commandModule;
 
         // Register the command description

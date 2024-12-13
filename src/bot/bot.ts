@@ -8,9 +8,7 @@ const bot = new Bot<Context>(process.env.TELEGRAM_BOT_TOKEN || ``);
 loadCommands(bot);
 
 const handleGracefulShutdown = async () => {
-
     await bot.stop();
-
     process.exit();
 };
 
