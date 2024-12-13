@@ -1,4 +1,5 @@
 import "dotenv/config.js";
+import storage from 'node-persist';
 
 const chatFullId: string[] = (process.env.CHAT_FULL_ID || '0').split('_');
 const chatId: number = parseInt(chatFullId[0]);
@@ -20,27 +21,36 @@ const successes = readdirSync(successesDir).filter(file =>
 
 import { Bot, Context, InlineKeyboard, InputFile } from "grammy";
 
-export default function startGame(bot: Bot<Context>) {
-    spawnEnemy(bot);
+export default async function startGame(bot: Bot<Context>) {
+    await storage.init();
+    const nextSpawn = await storage.get('next-spawn');
+    const currentEnemy = await storage.get('current-enemy');
+
+    if (!nextSpawn && !currentEnemy) spawnEnemy(bot);
+    if (nextSpawn) {
+        console.log(`nextSpawn is due in ${(nextSpawn - Date.now())/1000} seconds`)
+        setTimeout(() => {
+            spawnEnemy(bot);
+        }, nextSpawn - Date.now());
+    }
 
     bot.callbackQuery('pew', async (ctx: Context) => {
         if (ctx.update.callback_query?.message?.message_id) {
-            await bot.api.deleteMessage(chatId, ctx.update.callback_query.message?.message_id);
-            await updateScore(ctx);
-            killEnemy(bot);
+            killEnemy(bot, ctx.update.callback_query?.message?.message_id);
         }
 
         if (ctx.update.callback_query?.message?.message_thread_id) {
-            await bot.api.deleteMessage(chatId, ctx.update.callback_query?.message?.message_thread_id);
-            await updateScore(ctx);
-            killEnemy(bot);
+            killEnemy(bot, ctx.update.callback_query?.message?.message_thread_id);
         }
+
+        await updateScore(ctx);
     })
 }
 
-function spawnEnemy(bot: Bot<Context>) {
+async function spawnEnemy(bot: Bot<Context>) {
+    await storage.set('next-spawn', undefined);
     const image = targets[Math.floor(Math.random() * targets.length)];
-    bot.api.sendPhoto(
+    const msg = await bot.api.sendPhoto(
         chatId,
         new InputFile(image),
         {
@@ -49,9 +59,14 @@ function spawnEnemy(bot: Bot<Context>) {
             reply_markup: new InlineKeyboard().text('PEW', "pew")
         }
     );
+
+    await storage.set('current-enemy', msg.message_id);
 }
 
-function killEnemy(bot: Bot<Context>) {
+async function killEnemy(bot: Bot<Context>, message_id: number) {
+    await bot.api.deleteMessage(chatId, message_id);
+    await storage.set('current-enemy', undefined);
+
     const image = successes[Math.floor(Math.random() * successes.length)];
     bot.api.sendPhoto(
         chatId,
@@ -62,9 +77,13 @@ function killEnemy(bot: Bot<Context>) {
         }
     );
 
+    const delay = 20 * 1000;
+    const nextSpawn = Date.now() + delay;
+    storage.set("next-spawn", nextSpawn);
+
     setTimeout(() => {
         spawnEnemy(bot);
-    }, 1000);
+    }, delay);
 }
 
 const url: string = (process.env.NODE_ENV || 'development' == "development") ? 'http://localhost:3001' : 'https://api.shockwaves.ai'
