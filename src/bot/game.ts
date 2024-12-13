@@ -5,7 +5,7 @@ const isDev: boolean = ((process.env.NODE_ENV || 'development') == "development"
 
 const chatFullId: string[] = (process.env.CHAT_FULL_ID || '0').split('_');
 const chatId: number = parseInt(chatFullId[0]);
-const treadId: number = parseInt(chatFullId.length > 1 ? chatFullId[1] : '-1');
+const treadId: number = 0;//parseInt(chatFullId.length > 1 ? chatFullId[1] : '-1');
 
 import { readdirSync } from 'fs';
 import { join } from 'path';
@@ -73,7 +73,7 @@ async function killEnemy(bot: Bot<Context>, ctx: Context, message_id: number) {
         new InputFile(image),
         {
             message_thread_id: treadId,
-            caption: `${ctx.from?.first_name || ctx.from?.username} killed the enemy!\nCurrent kill count : ${data.score}`,
+            caption: `${ctx.from?.first_name || ctx.from?.username} killed the enemy!\nCurrent kill count : ${data.score}\n\nStay alert for other enemies`,
         }
     );
 
