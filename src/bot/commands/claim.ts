@@ -1,12 +1,7 @@
-import "dotenv/config.js";
+import { Context } from "grammy";
 
-import { Bot, Context } from 'grammy';
-
-const bot = new Bot<Context>(process.env.TELEGRAM_BOT_TOKEN || ``);
-
-bot.api.setMyCommands([{ command: "claim", description: "Claim your AKATON" }]);
-
-bot.command('claim', async (ctx) => {
+export const description: string = "Claim your AKATON";
+export const command = async (ctx: Context) => {
     const telegramId = ctx.from?.id;
     const reply_parameters = { reply_parameters: { message_id: ctx.message?.message_id || ctx.from?.id || 0 }, caption: '' };
 
@@ -44,33 +39,8 @@ bot.command('claim', async (ctx) => {
         console.error(`Couldn't get telegram ID`, telegramId);
         await ctx.reply('Something went wrong claiming your AKATON', reply_parameters);
     }
-
-})
-
-const handleGracefulShutdown = async () => {
-
-    await bot.stop();
-
-    process.exit();
-};
-
-if (process.env.NODE_ENV === "development") {
-    // Graceful shutdown handlers
-    process.once("SIGTERM", handleGracefulShutdown);
-    process.once("SIGINT", handleGracefulShutdown);
 }
 
-export const startBot = async () => {
-    if (bot.isInited()) {
-        await bot.stop();
-    }
-
-    await bot.start();
-};
-
-export default bot;
-
-// private functions
 /**
  * canClaim
  * @param telegramId Telegran user to check AKATON claim status
