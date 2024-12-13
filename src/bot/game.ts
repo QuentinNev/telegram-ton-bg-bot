@@ -28,7 +28,7 @@ export default async function startGame(bot: Bot<Context>) {
 
     if (!nextSpawn && !currentEnemy) spawnEnemy(bot);
     if (nextSpawn) {
-        console.log(`nextSpawn is due in ${(nextSpawn - Date.now())/1000} seconds`)
+        console.log(`nextSpawn is due in ${(nextSpawn - Date.now()) / 1000} seconds`)
         setTimeout(() => {
             spawnEnemy(bot);
         }, nextSpawn - Date.now());
@@ -77,7 +77,11 @@ async function killEnemy(bot: Bot<Context>, message_id: number) {
         }
     );
 
-    const delay = 20 * 1000;
+    const baseDelay = 24 * 60 * 60 * 1000;
+    const userCount = await bot.api.getChatMemberCount(chatId);
+    const freq = 3 + (Math.floor(userCount / 100));
+    const delay = (baseDelay / freq);
+
     const nextSpawn = Date.now() + delay;
     storage.set("next-spawn", nextSpawn);
 
@@ -105,6 +109,4 @@ async function updateScore(ctx: Context) {
         },
         body
     }).then(res => res.json());
-
-    console.log("Response", response);
 }
