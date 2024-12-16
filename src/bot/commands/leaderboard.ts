@@ -31,6 +31,8 @@ export const command = async (ctx: Context) => {
             else if (i === 1) text += `🥈 ${username}`;
             else if (i === 2) text += `🥉 ${username}`;
             else text += `🎯 ${username}`;
+
+            text += ` : ${results[i].score}`;
         }
 
         await ctx.reply(text, reply_parameters);
