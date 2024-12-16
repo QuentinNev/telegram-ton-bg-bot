@@ -1,7 +1,6 @@
 import { Bot, Context } from 'grammy';
 import { readdirSync } from 'fs';
 import { join } from 'path';
-import { fileURLToPath } from 'url';
 
 export const loadCommands = (bot: Bot<Context>) => {
   const commandsPath = join(__dirname);  // Path to the commands folder
