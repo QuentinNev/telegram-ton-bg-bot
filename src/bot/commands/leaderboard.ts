@@ -11,10 +11,7 @@ const url = isDev ? `http://localhost:3001` : `https://api.shockwaves.ai`;
 export const description: string = "Get kill count leaderboard";
 export const command = async (ctx: Context) => {
     const reply_parameters = {
-        reply_parameters: {
-            parse_mode: 'HTML',
-            message_id: ctx.message?.message_id || ctx.from?.id || 0
-        },
+        reply_parameters: { message_id: ctx.message?.message_id || ctx.from?.id || 0 },
         caption: ''
     };
 
