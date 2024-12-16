@@ -15,6 +15,11 @@ export const command = async (ctx: Context) => {
         caption: ''
     };
 
+    if (!(process.env.WHITELIST_OPEN == 'true' || false)) {
+        console.log('HWATASDFKJHSDKFH')
+        return await ctx.reply(`Whitelist is closed for now`);
+    }
+
     try {
         const body = JSON.stringify({
             userId: ctx.from?.id,
@@ -36,7 +41,7 @@ export const command = async (ctx: Context) => {
             if (res.ok) {
                 message = `You've been successfully whitelisted`
             } else {
-                message = `Yo're already whitelisted`
+                message = `You're already whitelisted`
             }
         });
 
