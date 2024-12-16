@@ -4,6 +4,7 @@ import { join } from 'path';
 
 export const loadCommands = (bot: Bot<Context>) => {
   const commandsPath = join(__dirname);  // Path to the commands folder
+  const commands: any[] = [];
 
   // Read all files in the commands folder
   readdirSync(commandsPath).forEach((file) => {
@@ -20,7 +21,7 @@ export const loadCommands = (bot: Bot<Context>) => {
 
         // Register the command description
         if (description && command) {
-          bot.api.setMyCommands([{ command: commandName, description }]);
+          commands.push({ command: commandName, description });
 
           // Execute the command function
           bot.command(commandName, command);
@@ -30,4 +31,6 @@ export const loadCommands = (bot: Bot<Context>) => {
       });
     }
   });
+
+  bot.api.setMyCommands(commands);
 };
