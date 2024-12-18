@@ -16,7 +16,6 @@ export const command = async (ctx: Context) => {
     };
 
     if (!(process.env.WHITELIST_OPEN == 'true' || false)) {
-        console.log('HWATASDFKJHSDKFH')
         return await ctx.reply(`Whitelist is closed for now`);
     }
 
