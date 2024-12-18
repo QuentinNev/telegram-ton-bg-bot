@@ -77,10 +77,14 @@ async function killEnemy(bot: Bot<Context>, ctx: Context, message_id: number) {
         }
     );
 
-    const baseDelay = 24 * 60 * 60 * 1000;
-    const userCount = await bot.api.getChatMemberCount(chatId);
-    const freq = 3 + (Math.floor(userCount / 100));
-    const delay = (baseDelay / freq);
+    const baseDelay: number = 24 * 60 * 60 * 1000;
+    const userCount: number = await bot.api.getChatMemberCount(chatId);
+
+    const baseFreq: number = (process.env.BASE_FREQUENCY ? parseInt(process.env.BASE_FREQUENCY) : 3)
+    const step: number = (process.env.STEP ? parseInt(process.env.STEP) : 100) 
+
+    const freq: number = baseFreq + (Math.floor(userCount / step));
+    const delay:number = (baseDelay / freq);
 
     const nextSpawn = Date.now() + delay;
     storage.set("next-spawn", nextSpawn);
