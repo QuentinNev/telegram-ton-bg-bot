@@ -3,9 +3,7 @@ import storage from 'node-persist';
 
 const isDev: boolean = ((process.env.NODE_ENV || 'development') == "development");
 
-const chatFullId: string[] = (process.env.CHAT_FULL_ID || '0').split('_');
-const chatId: number = parseInt(chatFullId[0]);
-const treadId: number = 0;//parseInt(chatFullId.length > 1 ? chatFullId[1] : '-1');
+import { chatId, treadId } from "./utils/getChatId";
 
 import { readdirSync } from 'fs';
 import { join } from 'path';
@@ -81,10 +79,10 @@ async function killEnemy(bot: Bot<Context>, ctx: Context, message_id: number) {
     const userCount: number = await bot.api.getChatMemberCount(chatId);
 
     const baseFreq: number = (process.env.BASE_FREQUENCY ? parseInt(process.env.BASE_FREQUENCY) : 3)
-    const step: number = (process.env.STEP ? parseInt(process.env.STEP) : 100) 
+    const step: number = (process.env.STEP ? parseInt(process.env.STEP) : 100)
 
     const freq: number = baseFreq + (Math.floor(userCount / step));
-    const delay:number = (baseDelay / freq);
+    const delay: number = (baseDelay / freq);
 
     const nextSpawn = Date.now() + delay;
     storage.set("next-spawn", nextSpawn);
