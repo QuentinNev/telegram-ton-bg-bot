@@ -3,8 +3,7 @@ import { Context } from "grammy";
 
 const isDev: boolean = ((process.env.NODE_ENV || 'development') == "development");
 
-const chatFullId: string[] = (process.env.CHAT_FULL_ID || '0').split('_');
-const chatId: number = parseInt(chatFullId[0]);
+import { chatId } from "../utils/getChatId";
 
 const url = isDev ? `http://localhost:3001` : `https://api.shockwaves.ai`;
 
