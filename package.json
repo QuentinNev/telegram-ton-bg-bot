@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cron": "^4.1.0",
     "dotenv": "^16.4.7",
     "grammy": "^1.33.0",
     "node-persist": "^4.0.3",
