@@ -1,8 +1,11 @@
 import "dotenv/config.js";
 
-import { Bot, Context } from 'grammy';
+import { Bot, Context, InlineKeyboard } from 'grammy';
 import { loadCommands } from "./commands";
-import spawnEnemy from "./game";
+import { chatId, treadId } from "./utils/getChatId";
+
+import getRandomPhoto from "./utils/getRandomPhoto";
+import { CronJob } from "cron";
 
 const bot = new Bot<Context>(process.env.TELEGRAM_BOT_TOKEN || ``);
 
@@ -27,10 +30,17 @@ export const startBot = async () => {
     if (bot.isInited()) {
         await bot.stop();
     }
-
+    cron();
     await bot.start();
 };
 
-spawnEnemy(bot);
-
 export default bot;
+
+export async function cron() {
+    const job = new CronJob('0 6,18 * * *', () => {
+        bot.api.sendPhoto(chatId, getRandomPhoto(), {
+            reply_markup: new InlineKeyboard().url("🚁 Play 🪂", `https://t.me/TON_BATTLEGROUND_bot?startapp`),
+            message_thread_id: treadId
+        });
+    });
+}
