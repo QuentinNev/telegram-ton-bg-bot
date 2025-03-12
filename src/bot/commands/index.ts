@@ -1,6 +1,7 @@
 import { Bot, Context } from 'grammy';
 import { readdirSync } from 'fs';
 import { join } from 'path';
+import Command from '../types/command';
 
 export const loadCommands = async (bot: Bot<Context>) => {
   const commandsPath = join(__dirname);  // Path to the commands folder
@@ -19,13 +20,12 @@ export const loadCommands = async (bot: Bot<Context>) => {
       const fileURL = `file://${filePath}`;
 
       // Import each command dynamically using the file URL
-      await import(fileURL).then((commandModule) => {
-        const { description, command } = commandModule;
+      await import(fileURL).then((module) => {
+        const commandModule: Command = module.default.default;
+        console.log("desc", commandModule)
 
-        if (command && description) {
-          commands.push({ command: commandName, description });
-          bot.command(commandName, command);
-        }
+        commands.push({ command: commandName, description: commandModule.description });
+        if (commandModule.public) bot.command(commandName, commandModule.command);
       }).catch((error) => {
         console.error(`Error loading command ${file}:`, error);
       });
