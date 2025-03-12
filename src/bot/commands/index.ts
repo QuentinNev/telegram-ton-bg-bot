@@ -12,7 +12,7 @@ export const loadCommands = async (bot: Bot<Context>) => {
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    if (file !== 'index.ts') {
+    if (file !== 'index.js') {
       const commandName = file.split('.')[0];  // Get the file name without extension
 
       // Convert the file path to a URL
@@ -22,16 +22,16 @@ export const loadCommands = async (bot: Bot<Context>) => {
       // Import each command dynamically using the file URL
       await import(fileURL).then((module) => {
         const commandModule: Command = module.default.default;
-        console.log("desc", commandModule)
 
-        commands.push({ command: commandName, description: commandModule.description });
-        if (commandModule.public) bot.command(commandName, commandModule.command);
+        if (commandModule.public)
+          commands.push({ command: commandName, description: commandModule.description });
+        bot.command(commandName, commandModule.command);
       }).catch((error) => {
         console.error(`Error loading command ${file}:`, error);
       });
     }
   }
 
-  console.log(commands)
-  bot.api.setMyCommands(commands);
+  const result = await bot.api.setMyCommands(commands);
+  console.log("Finished setting commands", commands);
 };
