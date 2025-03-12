@@ -1,5 +1,6 @@
 import "dotenv/config.js";
 import { Context } from "grammy";
+import Command from "../types/command";
 
 const isDev: boolean = ((process.env.NODE_ENV || 'development') == "development");
 
@@ -8,49 +9,52 @@ const chatId: number = parseInt(chatFullId[0]);
 
 const url = isDev ? `http://localhost:3001` : `https://api.shockwaves.ai`;
 
-export const description: string = "Request your access to TON Battleground alpha";
-export const command = async (ctx: Context) => {
-    const reply_parameters = {
-        reply_parameters: { message_id: ctx.message?.message_id || ctx.from?.id || 0 },
-        caption: ''
-    };
+const command: Command = {
+    public: true,
+    description: "Request your access to TON Battleground alpha",
+    command: async (ctx: Context) => {
+        const reply_parameters = {
+            reply_parameters: { message_id: ctx.message?.message_id || ctx.from?.id || 0 },
+            caption: ''
+        };
 
-    if (!(process.env.WHITELIST_OPEN == 'true' || false)) {
-        return await ctx.reply(`Whitelist is closed for now`);
-    }
+        if (!(process.env.WHITELIST_OPEN == 'true' || false)) {
+            return await ctx.reply(`Whitelist is closed for now`);
+        }
 
-    try {
-        const body = JSON.stringify({
-            userId: ctx.from?.id,
-            username: ctx.from?.username,
-            firstname: ctx.from?.first_name,
-            gameId: 4
-        });
+        try {
+            const body = JSON.stringify({
+                userId: ctx.from?.id,
+                username: ctx.from?.username,
+                firstname: ctx.from?.first_name,
+                gameId: 4
+            });
 
-        let message: string = '';
+            let message: string = '';
 
-        const response = await fetch(`${url}/whitelist/add`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-token': process.env.SW_API_TOKEN || ''
-            },
-            body
-        }).then(res => {
-            if (res.ok) {
-                message = `You've been successfully whitelisted`
-            } else {
-                message = `You're already whitelisted`
-            }
-        });
+            const response = await fetch(`${url}/whitelist/add`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-token': process.env.SW_API_TOKEN || ''
+                },
+                body
+            }).then(res => {
+                if (res.ok) {
+                    message = `You've been successfully whitelisted`
+                } else {
+                    message = `You're already whitelisted`
+                }
+            });
 
 
-        await ctx.reply(
-            message,
-            reply_parameters
-        );
-    } catch (e) {
-        console.error(`Error`, e);
-        await ctx.reply('Sorry, something went wrong', reply_parameters);
+            await ctx.reply(
+                message,
+                reply_parameters
+            );
+        } catch (e) {
+            console.error(`Error`, e);
+            await ctx.reply('Sorry, something went wrong', reply_parameters);
+        }
     }
 }
