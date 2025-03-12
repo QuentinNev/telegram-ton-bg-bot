@@ -37,10 +37,10 @@ export const startBot = async () => {
 export default bot;
 
 export async function cron() {
-    const job = new CronJob('0 10,22 * * *', () => {
+    new CronJob('30 9 * * *', () => {
         bot.api.sendPhoto(chatId, getRandomPhoto(), {
             reply_markup: new InlineKeyboard().url("🚁 Play 🪂", `https://t.me/TON_BATTLEGROUND_bot?startapp`),
             message_thread_id: treadId
         });
-    });
+    }).start();
 }
