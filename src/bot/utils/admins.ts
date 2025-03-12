@@ -6,7 +6,7 @@ import { ChatMemberAdministrator, ChatMemberOwner } from "grammy/types";
  * @param ctx Context of the command
  * @returns {Promise<(ChatMemberOwner | ChatMemberAdministrator)[]>} list of all moderators
  */
-export async function getAdmin(ctx: Context) : Promise<(ChatMemberOwner | ChatMemberAdministrator)[]> {
+export async function getAdmins(ctx: Context) : Promise<(ChatMemberOwner | ChatMemberAdministrator)[]> {
     return await ctx.getChatAdministrators();
 }
 
@@ -16,6 +16,6 @@ export async function getAdmin(ctx: Context) : Promise<(ChatMemberOwner | ChatMe
  * @returns {Promise<boolean>} 
  */
 export default async function isAdmin(ctx: Context): Promise<boolean> {
-    const mods = await getAdmin(ctx);
+    const mods = await getAdmins(ctx);
     return mods.some(mod => mod.user.id == ctx.from?.id);
 }
