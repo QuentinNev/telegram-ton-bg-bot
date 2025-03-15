@@ -7,9 +7,12 @@ const photos: string[] = [
 let last = -1;
 
 export default function getRandomPhoto() {
-    let index = Math.floor(Math.random() * photos.length);
-    while (last === index) { index = Math.floor(Math.random() * photos.length); }
+    let index = getRandomNumber(photos.length);
+    while (last === index) { index = getRandomNumber(photos.length); }
     last = index;
-    console.log(`Sending image n°${index}`);
     return photos[index];
+}
+
+export function getRandomNumber(max: number) {
+    return Math.floor(Math.random() * max);
 }
