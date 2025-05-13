@@ -6,7 +6,7 @@ import { chatId, treadId } from "./utils/getChatId";
 
 import getRandomPhoto from "./utils/getRandomPhoto";
 import { CronJob } from "cron";
-
+console.log('Bot token', process.env.TELEGRAM_BOT_TOKEN)
 const bot = new Bot<Context>(process.env.TELEGRAM_BOT_TOKEN || ``);
 const apiToken = process.env.SW_API_TOKEN || ``;
 
