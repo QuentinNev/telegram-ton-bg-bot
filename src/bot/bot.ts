@@ -98,7 +98,9 @@ export const startBot = async () => {
         if(bot.isInited()) clearInterval(interval);
     }, 1000);
 
-    bot.start();
+    bot.start({
+        allowed_updates: ['message', 'my_chat_member', 'chat_member', 'callback_query']
+    });
 
 };
 
