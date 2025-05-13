@@ -23,7 +23,7 @@ bot.on("message", async (ctx) => {
     await fetch(`https://data.tonbg.com/users/${ctx.from.id}`, {
         method: 'PATCH',
         headers: {
-            'Context-Type': 'application/json',
+            'Content-Type': 'application/json',
             'x-api-token': apiToken
         },
         body: JSON.stringify({ inTG: true })
