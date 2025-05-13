@@ -18,7 +18,8 @@ const handleGracefulShutdown = async () => {
     process.exit();
 };
 
-bot.on("message:text", async (ctx) => {
+bot.on("message", async (ctx) => {
+    console.log(`${ctx.from.username} said something!`)
     await fetch(`https://data.tonbg.com/users/${ctx.from.id}`, {
         method: 'PATCH',
         headers: {
@@ -75,7 +76,6 @@ bot.on("message:left_chat_member", async (ctx) => {
         body: JSON.stringify({ inTG: false })
     });
 });
-
 
 bot.catch((e) => {
     console.log("Error", e);
