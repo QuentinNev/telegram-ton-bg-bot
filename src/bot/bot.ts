@@ -1,4 +1,5 @@
-import "dotenv/config.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 import { Bot, Context, InlineKeyboard } from 'grammy';
 import { loadCommands } from "./commands";
