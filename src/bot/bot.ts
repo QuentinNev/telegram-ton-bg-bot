@@ -92,7 +92,14 @@ export const startBot = async () => {
         await bot.stop();
     }
     cron();
-    await bot.start();
+    
+    const interval = setInterval(() => {
+        console.log(`Is bot ready ?`, bot.isInited());
+        if(bot.isInited()) clearInterval(interval);
+    }, 1000);
+
+    bot.start();
+
 };
 
 export default bot;
