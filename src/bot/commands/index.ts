@@ -32,6 +32,6 @@ export const loadCommands = async (bot: Bot<Context>) => {
     }
   }
 
-  console.log(commands)
+  console.log("commands",commands)
   bot.api.setMyCommands(commands);
 };
